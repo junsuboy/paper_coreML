@@ -11,6 +11,18 @@ import Vision
 
 class VisionObjectRecognitionViewController: ViewController {
     
+    override func viewDidLoad() {
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(sender:)))
+        
+        view.addGestureRecognizer(tapGesture)
+        
+    }
+    
+    @objc func handleTap(sender: UITapGestureRecognizer) {
+        setupAVCapture()
+    }
+    
     private var detectionOverlay: CALayer! = nil
     
     // Vision parts
@@ -31,6 +43,12 @@ class VisionObjectRecognitionViewController: ViewController {
                     // perform all the UI updates on the main queue
                     if let results = request.results {
                         self.drawVisionRequestResults(results)
+                        
+                        if results.count > 0 {
+                            self.endCaptureSession()
+                            print(results[0].description)
+                            print("description")
+                        }
                     }
                 })
             })
