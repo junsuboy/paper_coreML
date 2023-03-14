@@ -47,7 +47,8 @@ class VisionObjectRecognitionViewController: ViewController {
                         if results.count > 0 {
                             self.endCaptureSession()
                             print(results[0].description)
-                            print("description")
+                            print(self.confidenceExtraction(description: results[0].description))
+                            print(self.objectExtraction(description: results[0].description))
                         }
                     }
                 })
@@ -173,4 +174,17 @@ class VisionObjectRecognitionViewController: ViewController {
         return shapeLayer
     }
     
+    func confidenceExtraction(description: String) -> Double {
+        let a = description.components(separatedBy: "confidence=")
+        return Double(String(a[1].prefix(8))) ?? 0.0
+    }
+    
+    func objectExtraction(description: String) -> String {
+        let a = description.components(separatedBy: "confidence=")
+        let b = String(a[1].prefix(8))
+        let c = a[1].components(separatedBy: "labels=[")
+        let d = c[1].components(separatedBy: ",")
+            
+        return d[0]
+    }
 }
