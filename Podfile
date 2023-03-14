@@ -4,4 +4,5 @@ use_frameworks!
 
 target 'BreakfastFinder' do
     pod 'SnapKit', '~> 5.6.0'
+    pod 'OSSSpeechKit'
 end

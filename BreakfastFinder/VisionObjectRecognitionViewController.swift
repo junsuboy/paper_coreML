@@ -8,16 +8,11 @@ Contains the object recognition view controller for the Breakfast Finder.
 import UIKit
 import AVFoundation
 import Vision
-import SwiftUI
 
 class VisionObjectRecognitionViewController: ViewController {
     
     override func viewDidLoad() {
-        
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(sender:)))
-        
-        self.synthesizer = AVSpeechSynthesizer()
-        AVSpeechSynthesisVoice.speechVoices()
         
         view.addGestureRecognizer(tapGesture)
         
@@ -30,18 +25,6 @@ class VisionObjectRecognitionViewController: ViewController {
     private var detectionOverlay: CALayer! = nil
     
     @State var synthesizer = AVSpeechSynthesizer()
-    
-    func play(_ string: String) {
-        let utterance = AVSpeechUtterance(string: string)
-        utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
-        utterance.rate = 0.52
-        synthesizer.stopSpeaking(at: .immediate)
-        synthesizer.speak(utterance)
-    }
-    
-    func stop() {
-        synthesizer.stopSpeaking(at: .immediate)
-    }
     
     // Vision parts
     private var requests = [VNRequest]()
@@ -67,7 +50,9 @@ class VisionObjectRecognitionViewController: ViewController {
                             print(results[0].description)
                             print(self.confidenceExtraction(description: results[0].description))
                             print(self.objectExtraction(description: results[0].description))
-                            self.play(self.objectExtraction(description: results[0].description))
+                            SpeechService.shared.speak(text: self.objectExtraction(description: results[0].description), voiceType: VoiceType.waveNetFemale) {
+                                print("Good!")
+                            }
                         }
                     }
                 })
@@ -200,10 +185,9 @@ class VisionObjectRecognitionViewController: ViewController {
     
     func objectExtraction(description: String) -> String {
         let a = description.components(separatedBy: "confidence=")
-        let b = String(a[1].prefix(8))
-        let c = a[1].components(separatedBy: "labels=[")
-        let d = c[1].components(separatedBy: ",")
+        let b = a[1].components(separatedBy: "labels=[")
+        let c = c[1].components(separatedBy: ",")
             
-        return d[0]
+        return c[0]
     }
 }
