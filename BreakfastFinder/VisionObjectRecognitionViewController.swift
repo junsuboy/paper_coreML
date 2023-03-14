@@ -8,12 +8,16 @@ Contains the object recognition view controller for the Breakfast Finder.
 import UIKit
 import AVFoundation
 import Vision
+import SwiftUI
 
 class VisionObjectRecognitionViewController: ViewController {
     
     override func viewDidLoad() {
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(sender:)))
+        
+        self.synthesizer = AVSpeechSynthesizer()
+        AVSpeechSynthesisVoice.speechVoices()
         
         view.addGestureRecognizer(tapGesture)
         
@@ -24,6 +28,20 @@ class VisionObjectRecognitionViewController: ViewController {
     }
     
     private var detectionOverlay: CALayer! = nil
+    
+    @State var synthesizer = AVSpeechSynthesizer()
+    
+    func play(_ string: String) {
+        let utterance = AVSpeechUtterance(string: string)
+        utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
+        utterance.rate = 0.52
+        synthesizer.stopSpeaking(at: .immediate)
+        synthesizer.speak(utterance)
+    }
+    
+    func stop() {
+        synthesizer.stopSpeaking(at: .immediate)
+    }
     
     // Vision parts
     private var requests = [VNRequest]()
@@ -49,6 +67,7 @@ class VisionObjectRecognitionViewController: ViewController {
                             print(results[0].description)
                             print(self.confidenceExtraction(description: results[0].description))
                             print(self.objectExtraction(description: results[0].description))
+                            self.play(self.objectExtraction(description: results[0].description))
                         }
                     }
                 })
