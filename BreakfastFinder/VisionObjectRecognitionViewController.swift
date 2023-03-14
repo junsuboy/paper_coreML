@@ -186,7 +186,7 @@ class VisionObjectRecognitionViewController: ViewController {
     func objectExtraction(description: String) -> String {
         let a = description.components(separatedBy: "confidence=")
         let b = a[1].components(separatedBy: "labels=[")
-        let c = c[1].components(separatedBy: ",")
+        let c = b[1].components(separatedBy: ",")
             
         return c[0]
     }
